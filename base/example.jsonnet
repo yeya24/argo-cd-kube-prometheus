@@ -6,12 +6,9 @@ local kp = (import 'kube-prometheus/main.libsonnet') + {
   },
 };
 
-{ 'setup/0namespace-namespace': kp.kubePrometheus.namespace } +
-{
-  ['setup/prometheus-operator-' + name]: kp.prometheusOperator[name]
-  for name in std.filter((function(name) name != 'serviceMonitor' && name != 'prometheusRule'), std.objectFields(kp.prometheusOperator))
-} +
 [kp.kubePrometheus.namespace] +
+[kp.prometheusOperator[name]
+  for name in std.filter((function(name) name != 'serviceMonitor' && name != 'prometheusRule'), std.objectFields(kp.prometheusOperator))] +
 [kp.alertmanager[name] for name in std.objectFields(kp.alertmanager)] +
 [kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus)] +
 [kp.prometheusOperator[name] for name in std.objectFields(kp.prometheusOperator)] +
